@@ -1,0 +1,35 @@
+from sklearn.datasets import load_diabetes
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+diabetes_data = load_diabetes()
+X = diabetes_data.data
+y = (diabetes_data.target > 130).astype(int)
+df = pd.DataFrame(X, columns=diabetes_data.feature_names)
+print("Number of features:", df.shape[1])
+plt.figure(figsize=(10, 8))
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+plt.title("Correlation Heatmap of Features")
+plt.show()
+def evaluate_classifiers(X, y, test_size):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)   
+ 
+    knn = KNeighborsClassifier()
+    knn.fit(X_train, y_train)
+    y_pred_knn = knn.predict(X_test)
+    
+  
+    nb = GaussianNB()
+    nb.fit(X_train, y_train)
+    y_pred_nb = nb.predict(X_test)
+   
+    for clf_name, y_pred in zip(["KNN", "Naive Bayes"], [y_pred_knn, y_pred_nb]):
+        print(f"\nPerformance metrics for {clf_name} with test size {test_size*100}%")
+        print("Accuracy:", accuracy_score(y_test, y_pred))
+        print("Precision:", precision_score(y_test, y_pred))
+        print("Recall:", recall_score(y_test, y_pred))
+        print (recall_score)
